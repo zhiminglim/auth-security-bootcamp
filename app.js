@@ -97,15 +97,19 @@ app.get("/logout", function(req, res) {
 });
 
 app.get("/secrets", function(req, res) {
-  User.find({"secret": {$ne: null}}, function(err, foundUsers) {
-    if (!err) {
-      if (foundUsers) {
-        res.render("secrets", {usersWithSecrets: foundUsers});
+  if (req.isAuthenticated()) {
+    User.find({"secret": {$ne: null}}, function(err, foundUsers) {
+      if (!err) {
+        if (foundUsers) {
+          res.render("secrets", {usersWithSecrets: foundUsers});
+        }
+      } else {
+        console.log(err);
       }
-    } else {
-      console.log(err);
-    }
-  });
+    });
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/submit", function(req, res) {
